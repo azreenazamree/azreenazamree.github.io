@@ -2,16 +2,253 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Your Name</title>
+    <title>Azreena Zamree</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- React -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- MUI -->
+    <script src="https://unpkg.com/@mui/material@5/umd/material-ui.production.min.js"></script>
+
+    <!-- Emotion -->
+    <script src="https://unpkg.com/@emotion/react@11/umd/emotion-react.umd.min.js"></script>
+    <script src="https://unpkg.com/@emotion/styled@11/umd/emotion-styled.umd.min.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+        background: #f7f5f2;
+      }
+
+      /* ===== Background Carousel ===== */
+      .carousel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 40vh;
+        overflow: hidden;
+        z-index: -1;
+      }
+
+      .carousel img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        opacity: 0;
+        transition: opacity 2s ease-in-out;
+      }
+
+      .carousel img.visible {
+        opacity: 1;
+      }
+
+      .carousel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(247, 245, 242, 0.65);
+      }
+
+      .profile-img {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        object-fit: cover;
+        opacity: 0.85;
+        border: 2px solid rgba(230, 225, 216, 0.9);
+      }
+    </style>
   </head>
+
   <body>
-    <h1>Your Name</h1>
-    <ul>
-      <li><a href="#">Instagram</a></li>
-      <li><a href="#">LinkedIn</a></li>
-      <li><a href="#">GitHub</a></li>
-      <li><a href="#">X / Twitter</a></li>
-      <li><a href="#">Website</a></li>
-    </ul>
+    <!-- ===== Carousel Images ===== -->
+    <div class="carousel">
+      <img src="assets/photo1.jpg" class="visible" />
+      <img src="assets/photo2.jpg" />
+    </div>
+
+    <div id="root"></div>
+
+    <!-- ===== Carousel Logic ===== -->
+    <script>
+      const images = document.querySelectorAll(".carousel img");
+      let current = 0;
+
+      setInterval(() => {
+        const next = (current + 1) % images.length;
+        images[next].classList.add("visible");
+
+        setTimeout(() => {
+          images[current].classList.remove("visible");
+          current = next;
+        }, 2000);
+      }, 5000);
+    </script>
+
+    <!-- ===== App ===== -->
+    <script>
+      const {
+        Box,
+        Container,
+        Typography,
+        Button,
+        Avatar,
+        Stack,
+        ThemeProvider,
+        createTheme,
+        Divider,
+      } = MaterialUI;
+
+      const theme = createTheme({
+        palette: {
+          mode: "light",
+          background: {
+            default: "#f7f5f2",
+            paper: "#ffffff",
+          },
+          text: {
+            primary: "#1f1f1f",
+            secondary: "#6b6b6b",
+          },
+          primary: {
+            main: "#c2b8a3",
+          },
+        },
+        typography: {
+          fontFamily: "Inter, system-ui, sans-serif",
+        },
+        shape: {
+          borderRadius: 14,
+        },
+        components: {
+          MuiButton: {
+            styleOverrides: {
+              root: {
+                textTransform: "none",
+                paddingTop: 14,
+                paddingBottom: 14,
+                borderColor: "#e6e1d8",
+                color: "#1f1f1f",
+              },
+            },
+          },
+        },
+      });
+
+      function LinkButton(label, href) {
+        return React.createElement(
+          Button,
+          {
+            variant: "outlined",
+            fullWidth: true,
+            href,
+            target: "_blank",
+            sx: {
+              "&:hover": {
+                backgroundColor: "#f3f1ed",
+                borderColor: "#c2b8a3",
+              },
+            },
+          },
+          label
+        );
+      }
+
+      async function loadConfig() {
+        const res = await fetch("assets/links.json", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to load links.json");
+        return res.json();
+      }
+
+      function App({ config }) {
+        const { profile, links = [] } = config;
+
+        return React.createElement(
+          ThemeProvider,
+          { theme },
+          React.createElement(
+            Container,
+            {
+              maxWidth: "sm",
+              sx: {
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                pt: "35vh",
+              },
+            },
+            React.createElement(
+              Box,
+              {
+                sx: {
+                  width: "100%",
+                  p: 4,
+                  bgcolor: "background.paper",
+                  borderRadius: 4,
+                },
+              },
+              React.createElement(
+                Stack,
+                { spacing: 2.5, alignItems: "center" },
+                React.createElement("img", {
+                  src: profile.avatar,
+                  className: "profile-img",
+                  alt: "Profile",
+                }),
+                React.createElement(
+                  Typography,
+                  { variant: "h6", fontWeight: 500 },
+                  profile.name
+                ),
+                React.createElement(
+                  Typography,
+                  {
+                    variant: "body2",
+                    color: "text.secondary",
+                    align: "center",
+                  },
+                  profile.subtitle
+                ),
+
+                React.createElement(Divider, { flexItem: true }),
+
+                React.createElement(
+                  Stack,
+                  { spacing: 1.5, sx: { width: "80%", mt: 1 } },
+                  ...links.map((l) => LinkButton(l.label, l.href))
+                )
+              )
+            )
+          )
+        );
+      }
+
+      (async () => {
+        try {
+          const config = await loadConfig();
+          ReactDOM.createRoot(document.getElementById("root")).render(
+            React.createElement(App, { config })
+          );
+        } catch (err) {
+          document.getElementById("root").innerHTML =
+            "<div style='padding:32px;font-family:system-ui'>Failed to load links</div>";
+          console.error(err);
+        }
+      })();
+    </script>
   </body>
 </html>

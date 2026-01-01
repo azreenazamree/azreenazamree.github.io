@@ -1,0 +1,13 @@
+{
+  "profile": {
+    "name": "Azreena Zamree",
+    "subtitle": "Robotics · UI/UX · Adventures · Writing slowly",
+    "avatar": "assets/profile.jpg"
+  },
+  "links": [
+    { "label": "GitHub", "href": "https://github.com/azreenazamree" },
+    { "label": "LinkedIn", "href": "https://linkedin.com/in/azreena-zamree" },
+    { "label": "Instagram", "href": "https://www.instagram.com/xazreenah/" },
+    { "label": "Blog", "href": "#" }
+  ]
+}
